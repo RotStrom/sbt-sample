@@ -1,8 +1,8 @@
 def PreownedKittenProject(name: String): Project =
   Project(name, file(name)).settings(
     version := "1.0",
-    organization := "com.github",
-    libraryDependencies += "org.specs2" %% "specs2-core" % "3.8.4" % "test"
+    organization := "com.github.rotstrom",
+    libraryDependencies += "org.specs2" %% "specs2-core" % "3.8.4" % Test
   )
 
 name := "preowned-kittens"
@@ -36,6 +36,14 @@ lazy val common = PreownedKittenProject("common").settings(
     else sys.error("No such file: version.properties")
   }
 )
-lazy val analytics = PreownedKittenProject("analytics").dependsOn(common).settings()
+lazy val analytics = PreownedKittenProject("analytics").dependsOn(common).settings(
+  sourceDirectory := new File(baseDirectory.value, "sources"),
+  sourceDirectory in Compile := new File(sourceDirectory.value, "prod")
+)
 lazy val website = PreownedKittenProject("website").dependsOn(common).settings()
+
+includeFilter in (Compile, unmanagedSources) := "*.scala"
+excludeFilter in (Compile, unmanagedSources) := NothingFilter
+
+mappings in packageBin in Compile += (baseDirectory.value / "README.md") -> s"$name-readme"
 
