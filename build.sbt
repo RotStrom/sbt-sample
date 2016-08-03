@@ -1,8 +1,12 @@
 def PreownedKittenProject(name: String): Project =
   Project(name, file(name)).settings(
     version := "1.0",
-    organization := "com.github.rotstrom",
-    libraryDependencies += "org.specs2" %% "specs2-core" % "3.8.4" % Test
+    organization := "org.preownedkittens",
+    libraryDependencies ++= Seq(
+      "org.specs2" %% "specs2-core" % "3.8.4" % Test,
+      "junit" % "junit" % "4.11" % Test,
+      "com.novocode" % "junit-interface" % "0.11" % Test
+    )
   )
 
 name := "preowned-kittens"
@@ -42,8 +46,10 @@ lazy val analytics = PreownedKittenProject("analytics").dependsOn(common).settin
 )
 lazy val website = PreownedKittenProject("website").dependsOn(common).settings()
 
-includeFilter in (Compile, unmanagedSources) := "*.scala"
-excludeFilter in (Compile, unmanagedSources) := NothingFilter
+includeFilter in(Compile, unmanagedSources) := "*.scala"
+excludeFilter in(Compile, unmanagedSources) := NothingFilter
 
 mappings in packageBin in Compile += (baseDirectory.value / "README.md") -> s"$name-readme"
+
+
 
